@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WordleSolver": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\adams\\Projects\\WordleSolver\\WordleSolver"
+    }
+  }
+}
