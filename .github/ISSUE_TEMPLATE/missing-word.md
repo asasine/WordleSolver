@@ -1,8 +1,8 @@
 ---
 name: Missing word
-about: A word is missing from the dictionary
+about: A word is missing from the word list
 title: Missing word
-labels: bug, missing word
+labels: bug
 assignees: asasine
 
 ---
@@ -10,4 +10,4 @@ assignees: asasine
 **Missing words**
 - Words
 
-**Was this word missing from wordle's dictionary? Or was it missing from the solver's?**
+**Was this word missing from wordle's word list? Or was it missing from the solver's?**
