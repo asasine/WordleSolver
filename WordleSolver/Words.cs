@@ -4,27 +4,12 @@ namespace WordleSolver
     {
         private List<Word> words;
 
-        public Words(string wordsPath, string? wordsToRemovePath = null)
+        public Words(string wordsPath)
         {
-            HashSet<Word> wordsToRemove;
-            if (File.Exists(wordsToRemovePath))
-            {
-                wordsToRemove = File.ReadAllLines(wordsToRemovePath)
-                    .Select(line => line.Trim())
-                    .Where(line => line.Length >= 0)
-                    .Select(line => new Word(line))
-                    .ToHashSet();
-            }
-            else
-            {
-                wordsToRemove = new HashSet<Word>();
-            }
-
             var lines = File.ReadAllLines(wordsPath)
                 .Select(line => line.Trim())
                 .Where(line => line.Length >= 0)
                 .Select(line => new Word(line))
-                .Except(wordsToRemove)
                 .ToList();
 
             this.words = new List<Word>(lines);
