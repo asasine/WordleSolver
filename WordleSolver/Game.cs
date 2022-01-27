@@ -70,6 +70,11 @@ namespace WordleSolver
             Console.WriteLine("The game ends after 6 guesses.");
         }
 
+        private void Statistics()
+        {
+            Console.WriteLine(this.words.GetStatistics());
+        }
+
         private Guess? GetGuess(IReadOnlyCollection<Word> words)
         {
             var word = GetWordInput(words);
@@ -176,6 +181,14 @@ namespace WordleSolver
             {
                 Console.WriteLine();
                 Help();
+                Console.WriteLine();
+                return GetInput(prompt);
+            }
+
+            if (line == "!statistics" || line == "!stats")
+            {
+                Console.WriteLine();
+                Statistics();
                 Console.WriteLine();
                 return GetInput(prompt);
             }

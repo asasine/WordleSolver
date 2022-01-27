@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace WordleSolver
 {
     public class Words
@@ -126,6 +128,8 @@ namespace WordleSolver
             this.words.Remove(word);
         }
 
+        public Statistics GetStatistics() => new(this);
+
         private void SortWords(Statistics? statistics = null)
         {
             this.words.Sort(statistics ?? new Statistics(this));
@@ -133,7 +137,7 @@ namespace WordleSolver
 
         private static string Pluralize(string singularWord, string pluralWord, int count) => count == 1 ? singularWord : pluralWord;
 
-        private class Statistics : Comparer<Word>, IEquatable<Statistics>
+        public class Statistics : Comparer<Word>, IEquatable<Statistics>
         {
             private readonly Words words;
             private readonly IDictionary<char, double> relativeFrequencies;
@@ -223,6 +227,17 @@ namespace WordleSolver
                 }
 
                 return this.relativeFrequencies.Equals(other.relativeFrequencies);
+            }
+
+            public override string? ToString()
+            {
+                var stringBuilder = new StringBuilder();
+                for (var letter = 'a'; letter <= 'z'; letter++)
+                {
+                    stringBuilder.AppendLine($"{letter}: {this.relativeFrequencies[letter]:P02}");
+                }
+
+                return stringBuilder.ToString();
             }
         }
     }
