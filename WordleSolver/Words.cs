@@ -3,6 +3,7 @@ namespace WordleSolver
     public class Words
     {
         private List<Word> words;
+        private readonly Statistics originalStatistics;
 
         public Words(string wordsPath)
         {
@@ -13,7 +14,8 @@ namespace WordleSolver
                 .ToList();
 
             this.words = new List<Word>(lines);
-            SortWords();
+            this.originalStatistics = new Statistics(this);
+            SortWords(this.originalStatistics);
         }
 
         public void Guess(Guess guess)
@@ -124,26 +126,29 @@ namespace WordleSolver
             this.words.Remove(word);
         }
 
-        private void SortWords()
+        private void SortWords(Statistics? statistics = null)
         {
-            this.words.Sort(new Statistics(this.words));
+            this.words.Sort(statistics ?? new Statistics(this));
         }
 
         private static string Pluralize(string singularWord, string pluralWord, int count) => count == 1 ? singularWord : pluralWord;
 
-        private class Statistics : Comparer<Word>
+        private class Statistics : Comparer<Word>, IEquatable<Statistics>
         {
+            private readonly Words words;
             private readonly IDictionary<char, double> relativeFrequencies;
 
-            public Statistics(IReadOnlyCollection<Word> words)
+            public Statistics(Words words)
             {
+                this.words = words;
+
                 var counts = new Dictionary<char, int>(26);
                 for (char letter = 'a'; letter <= 'z'; letter++)
                 {
                     counts[letter] = 0;
                 }
 
-                foreach (var word in words)
+                foreach (var word in this.words.words)
                 {
                     foreach (var letter in word.word)
                     {
@@ -189,8 +194,35 @@ namespace WordleSolver
                     }
                 }
 
-                // same letter uniqueness and frequencies, choose arbitrarily
+                // same letter uniqueness and frequencies, choose based on the original statistics
+                // unless this Statistics is equivalent to the original Statistics, in which case this is infinitely recursive
+                if (!this.Equals(this.words.originalStatistics))
+                {
+                    Console.WriteLine($"Breaking tie between {x} and {y} with original statistics.");
+                    var originalCompareTo = this.words.originalStatistics.Compare(x, y);
+                    if (originalCompareTo != 0)
+                    {
+                        return originalCompareTo;
+                    }
+                }
+
+                // original had same uniqueness and frequencies, choose arbitrarily
                 return 1;
+            }
+
+            public bool Equals(Statistics? other)
+            {
+                if (other == null)
+                {
+                    return false;
+                }
+
+                if (object.ReferenceEquals(this, other))
+                {
+                    return true;
+                }
+
+                return this.relativeFrequencies.Equals(other.relativeFrequencies);
             }
         }
     }
