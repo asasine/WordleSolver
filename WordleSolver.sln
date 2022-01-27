@@ -1,9 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordleSolver", "WordleSolver\WordleSolver.csproj", "{4C76093C-E880-4D46-8621-650284E7878E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordleSolver", "WordleSolver\WordleSolver.csproj", "{4C76093C-E880-4D46-8621-650284E7878E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{84957CDA-CE40-4C61-BBE9-7422541D9CDF}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{191ADD4E-58E0-44C3-B0CB-FB0E03E1BCA3}"
+	ProjectSection(SolutionItems) = preProject
+		data\valid_words.txt = data\valid_words.txt
+		data\words_of_the_day.txt = data\words_of_the_day.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
