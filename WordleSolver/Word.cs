@@ -11,9 +11,9 @@ namespace WordleSolver
                 throw new ArgumentNullException(nameof(word));
             }
 
-            if (word.Length != 5)
+            if (word.Length != Constants.WORD_LENGTH)
             {
-                throw new ArgumentOutOfRangeException(nameof(word), "Word must have 5 letters.");
+                throw new ArgumentOutOfRangeException(nameof(word), $"Word must have {Constants.WORD_LENGTH} letters.");
             }
 
             this.word = word;

@@ -67,7 +67,7 @@ namespace WordleSolver
             // edge case: if multiples of a letter are in the guess, and not all of them are in the final answer, the extras will be grey
             // thereore, only remove words where the count of the letter is less than or equal to the number of greens + yellows - greys of that letter
             var countRemovedGrey = 0;
-            var distinctGreyLetters = greyLetters.Aggregate(new Dictionary<char, int>(5), (accumulated, tuple) =>
+            var distinctGreyLetters = greyLetters.Aggregate(new Dictionary<char, int>(Constants.WORD_LENGTH), (accumulated, tuple) =>
             {
                 if (!accumulated.ContainsKey(tuple.letter))
                 {
@@ -141,30 +141,74 @@ namespace WordleSolver
         {
             private readonly Words words;
             private readonly IDictionary<char, double> relativeFrequencies;
+            private readonly IReadOnlyCollection<IDictionary<char, double>> relativeFrequenciesPerPosition;
 
             public Statistics(Words words)
             {
                 this.words = words;
 
-                var counts = new Dictionary<char, int>(26);
-                for (char letter = 'a'; letter <= 'z'; letter++)
+                static IDictionary<char, double> createLetterDictionary()
                 {
-                    counts[letter] = 0;
+                    var dictionary = new Dictionary<char, double>();
+                    for (char letter = 'a'; letter <= 'z'; letter++)
+                    {
+                        dictionary[letter] = 0;
+                    }
+
+                    return dictionary;
                 }
+
+                var countsPerPosition = Enumerable
+                    .Repeat(0, Constants.WORD_LENGTH)
+                    .Select(_ => createLetterDictionary())
+                    .ToList();
 
                 foreach (var word in this.words.words)
                 {
-                    foreach (var letter in word.word)
+                    for (int i = 0; i < Constants.WORD_LENGTH; i++)
                     {
-                        counts[letter]++;
+                        var letter = word.word[i];
+                        countsPerPosition.ElementAt(i)[letter]++;
                     }
                 }
 
-                double total = counts.Sum(pair => pair.Value);
-                this.relativeFrequencies = new Dictionary<char, double>(26);
-                foreach (var (letter, count) in counts)
+                var relativeFrequenciesPerPosition = Enumerable
+                    .Repeat(0, Constants.WORD_LENGTH)
+                    .Select(_ => createLetterDictionary())
+                    .ToList();
+
+                for (var i = 0; i < Constants.WORD_LENGTH; i++)
                 {
-                    this.relativeFrequencies[letter] = count / total;
+                    var counts = countsPerPosition.ElementAt(i);
+                    double total = counts.Sum(pair => pair.Value);
+                    var relativeFrequencies = relativeFrequenciesPerPosition.ElementAt(i);
+                    foreach (var (letter, count) in counts)
+                    {
+                        relativeFrequencies[letter] = count / total;
+                    }
+                }
+
+                this.relativeFrequenciesPerPosition = relativeFrequenciesPerPosition;
+
+                {
+                    var counts = countsPerPosition.Aggregate(createLetterDictionary(), (counts, countsAtPosition) =>
+                    {
+                        foreach (var (letter, count) in countsAtPosition)
+                        {
+                            counts[letter] += count;
+                        }
+
+                        return counts;
+                    });
+
+                    double total = countsPerPosition.Sum(counts => counts.Sum(pair => pair.Value));
+                    var relativeFrequencies = createLetterDictionary();
+                    foreach (var (letter, count) in counts)
+                    {
+                        relativeFrequencies[letter] = count / total;
+                    }
+
+                    this.relativeFrequencies = relativeFrequencies;
                 }
             }
 
@@ -231,10 +275,26 @@ namespace WordleSolver
 
             public override string? ToString()
             {
+                const int columnWidth = 8;
                 var stringBuilder = new StringBuilder();
+                var headers = new string[] { "letter", "total", "0", "1", "2", "3", "4" };
+                foreach (var header in headers)
+                {
+                    stringBuilder.Append($"{header,columnWidth}");
+                }
+
+                stringBuilder.AppendLine();
+
                 for (var letter = 'a'; letter <= 'z'; letter++)
                 {
-                    stringBuilder.AppendLine($"{letter}: {this.relativeFrequencies[letter]:P02}");
+                    stringBuilder.Append($"{letter,columnWidth}");
+                    stringBuilder.Append($"{this.relativeFrequencies[letter],columnWidth:P2}");
+                    for (var i = 0; i < Constants.WORD_LENGTH; i++)
+                    {
+                        stringBuilder.Append($"{this.relativeFrequenciesPerPosition.ElementAt(i)[letter],columnWidth:P2}");
+                    }
+
+                    stringBuilder.AppendLine();
                 }
 
                 return stringBuilder.ToString();

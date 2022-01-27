@@ -11,20 +11,20 @@ namespace WordleSolver
 
         public Guess(Word word, IReadOnlyCollection<Color> results)
         {
-            if (results.Count != 5)
+            if (results.Count != Constants.WORD_LENGTH)
             {
-                throw new ArgumentOutOfRangeException(nameof(results), "The results must have 5 items.");
+                throw new ArgumentOutOfRangeException(nameof(results), $"The results must have {Constants.WORD_LENGTH} items.");
             }
 
             this.word = word;
             this.results = results;
 
-            this.zipped = word.word.Zip(Enumerable.Range(0, 5), results)
+            this.zipped = word.word.Zip(Enumerable.Range(0, Constants.WORD_LENGTH), results)
                 .Select(tuple => new LetterGuess(tuple.First, tuple.Second, tuple.Third))
                 .ToList();
         }
 
-        public int Count => 5;
+        public int Count => Constants.WORD_LENGTH;
 
         public IEnumerator<LetterGuess> GetEnumerator() => this.zipped.GetEnumerator();
 

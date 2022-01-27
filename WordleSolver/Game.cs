@@ -65,7 +65,7 @@ namespace WordleSolver
             Console.WriteLine("Directions:");
             Console.WriteLine("<enter> to receive a new word.");
             Console.WriteLine("Enter a word from the suggestions.");
-            Console.WriteLine("You can also enter a differnet 5-letter word.");
+            Console.WriteLine($"You can also enter a differnet {Constants.WORD_LENGTH}-letter word.");
             Console.WriteLine($"Enter {GetColorsPhrase()} (space-separated) after selecting a word.");
             Console.WriteLine("The game ends after 6 guesses.");
         }
@@ -115,14 +115,14 @@ namespace WordleSolver
                 }
             }
 
-            if (input.Length == 5)
+            if (input.Length == Constants.WORD_LENGTH)
             {
                 Console.WriteLine($"Using word: {input}");
                 return new Word(input);
             }
             else
             {
-                Console.WriteLine($"You entered a {input.Length}-letter word, please use 5 letters.");
+                Console.WriteLine($"You entered a {input.Length}-letter word, please use {Constants.WORD_LENGTH} letters.");
                 return GetWordInput(words);
             }
         }
@@ -136,7 +136,7 @@ namespace WordleSolver
             }
 
             var unparsedResults = input.Split(' ');
-            if (unparsedResults.Length != 5)
+            if (unparsedResults.Length != Constants.WORD_LENGTH)
             {
                 Console.WriteLine($"Enter {GetColorsPhrase()} (space-separated) after guessing a word.");
                 Console.WriteLine($"You provided {unparsedResults.Length} instead.");
