@@ -7,15 +7,20 @@ namespace WordleSolver
         private List<Word> words;
         private readonly Statistics originalStatistics;
 
-        public Words(string wordsPath)
+        public Words(params string[] wordsPaths)
         {
-            var lines = File.ReadAllLines(wordsPath)
-                .Select(line => line.Trim())
-                .Where(line => line.Length >= 0)
-                .Select(line => new Word(line))
-                .ToList();
+            IEnumerable<string> lines = Enumerable.Empty<string>();
+            foreach (var wordsPath in wordsPaths)
+            {
+                lines = lines.Concat(File.ReadAllLines(wordsPath));
+            }
 
-            this.words = new List<Word>(lines);
+            lines = lines
+                .Distinct()
+                .Select(line => line.Trim())
+                .Where(line => line.Length >= 0);
+
+            this.words = lines.Select(line => new Word(line)).ToList();
             this.originalStatistics = new Statistics(this);
             SortWords(this.originalStatistics);
         }
@@ -246,7 +251,6 @@ namespace WordleSolver
                 // unless this Statistics is equivalent to the original Statistics, in which case this is infinitely recursive
                 if (!this.Equals(this.words.originalStatistics))
                 {
-                    Console.WriteLine($"Breaking tie between {x} and {y} with original statistics.");
                     var originalCompareTo = this.words.originalStatistics.Compare(x, y);
                     if (originalCompareTo != 0)
                     {
