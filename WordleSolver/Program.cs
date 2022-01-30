@@ -2,9 +2,19 @@
 {
     internal class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            var words = new Words("../data/words_of_the_day.txt", "../data/valid_words.txt");
+            var wordsPaths = new List<string>()
+            {
+                "../data/words_of_the_day.txt"
+            };
+
+            if (args.Length >= 1 && args[0].ToLower() == "--all-words")
+            {
+                wordsPaths.Add("../data/valid_words.txt");
+            }
+
+            var words = new Words(wordsPaths.ToArray());
             var consoleInput = new ConsoleInput();
             var game = new Game(words, consoleInput);
             game.Run();
