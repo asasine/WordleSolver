@@ -1,4 +1,6 @@
-﻿namespace WordleSolver
+﻿using WordleSolver.Games;
+
+namespace WordleSolver
 {
     internal class Program
     {
@@ -16,8 +18,14 @@
 
             var words = new Words(wordsPaths.ToArray());
             var consoleInput = new ConsoleInput();
-            var game = new Game(words, consoleInput);
+            var game = GetGame(consoleInput, words);
+
             game.Run();
+        }
+
+        static IGame GetGame(IInput input, Words words)
+        {
+            return new Game(words, input);
         }
     }
 }

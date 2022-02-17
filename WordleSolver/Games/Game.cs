@@ -1,6 +1,6 @@
-namespace WordleSolver
+namespace WordleSolver.Games
 {
-    public class Game
+    public class Game : IGame
     {
         private readonly Words words;
         private readonly IInput input;
@@ -23,8 +23,8 @@ namespace WordleSolver
                 guess = null;
                 while (guess == null)
                 {
-                    var bestWords = this.words.BestWords();
-                    Console.WriteLine($"Best words (out of {this.words.Count()}):");
+                    var bestWords = words.BestWords();
+                    Console.WriteLine($"Best words (out of {words.Count()}):");
                     for (var wordIndex = 0; wordIndex < bestWords.Count; wordIndex++)
                     {
                         var word = bestWords.ElementAt(wordIndex);
@@ -37,7 +37,7 @@ namespace WordleSolver
                     {
                         var bestWord = bestWords.First();
                         Console.WriteLine($"Removing {bestWord}");
-                        this.words.Remove(bestWord);
+                        words.Remove(bestWord);
                     }
                 }
 
@@ -46,7 +46,7 @@ namespace WordleSolver
                     break;
                 }
 
-                this.words.Guess(guess);
+                words.Guess(guess);
             }
 
             Console.WriteLine();
@@ -72,7 +72,7 @@ namespace WordleSolver
 
         private void Statistics()
         {
-            Console.WriteLine(this.words.GetStatistics());
+            Console.WriteLine(words.GetStatistics());
         }
 
         private Guess? GetGuess(IReadOnlyCollection<Word> words)
@@ -176,7 +176,7 @@ namespace WordleSolver
 
         private string? GetInput(string? prompt = null)
         {
-            var line = this.input.ReadLine(prompt);
+            var line = input.ReadLine(prompt);
             if (line == "!help")
             {
                 Console.WriteLine();
