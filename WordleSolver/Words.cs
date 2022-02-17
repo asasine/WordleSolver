@@ -303,6 +303,10 @@ namespace WordleSolver
 
                 return stringBuilder.ToString();
             }
+
+            public override bool Equals(object? obj) => obj != null && Equals(obj as Statistics);
+
+            public override int GetHashCode() => this.words.GetHashCode();
         }
     }
 }
