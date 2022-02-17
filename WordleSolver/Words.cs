@@ -1,11 +1,14 @@
+using System.Collections;
 using System.Text;
 
 namespace WordleSolver
 {
-    public class Words
+    public class Words : IReadOnlyCollection<Word>
     {
         private List<Word> words;
         private readonly Statistics originalStatistics;
+
+        int IReadOnlyCollection<Word>.Count => ((IReadOnlyCollection<Word>)words).Count;
 
         public Words(params string[] wordsPaths)
         {
@@ -141,6 +144,16 @@ namespace WordleSolver
         }
 
         private static string Pluralize(string singularWord, string pluralWord, int count) => count == 1 ? singularWord : pluralWord;
+
+        public IEnumerator<Word> GetEnumerator()
+        {
+            return ((IEnumerable<Word>)words).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)words).GetEnumerator();
+        }
 
         public class Statistics : Comparer<Word>, IEquatable<Statistics>
         {
