@@ -11,21 +11,25 @@ namespace WordleSolver
                 "../data/words_of_the_day.txt"
             };
 
-            if (args.Length >= 1 && args[0].ToLower() == "--all-words")
+            if (args.Contains("--all-words"))
             {
                 wordsPaths.Add("../data/valid_words.txt");
             }
 
             var words = new Words(wordsPaths.ToArray());
-            var consoleInput = new ConsoleInput();
-            var game = GetGame(consoleInput, words);
+            var input = new ConsoleInput();
+
+            IGame game;
+            if (args.Contains("--mode=known-prefix"))
+            {
+                game = new KnownPrefix(words, input);
+            }
+            else
+            {
+                game = new Game(words, input);
+            }
 
             game.Run();
-        }
-
-        static IGame GetGame(IInput input, Words words)
-        {
-            return new Game(words, input);
         }
     }
 }
